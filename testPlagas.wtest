@@ -1,0 +1,172 @@
+import plagas.*
+
+describe "Test de elementos" {
+  const hogar1 = new Hogar(nivelMugre = 100, confort = 200)
+  const hogar2 = new Hogar(nivelMugre = 300, confort = 200)
+  const mascota1 = new Mascota(nivelDeSalud = 300)
+  const mascota2 = new Mascota(nivelDeSalud = 200)
+  const huerta1 = new Huerta(capacidadDeProduccion = 80)
+  const huerta2 = new Huerta(capacidadDeProduccion = 60)
+  const barrio = new Barrio()
+  
+  test "un hogar con nivel de mugre 100 y confort 200 es bueno" {
+    assert.that(hogar1.esBuena())
+  }
+  
+  test "un hogar con nivel de mugre 300 y confort 200 no es bueno" {
+    assert.notThat(hogar2.esBuena())
+  }
+  
+  test "una mascota con nivel de salud 300 es buena" {
+    assert.that(mascota1.esBuena())
+  }
+  
+  test "una mascota con nivel de salud 200 no es buena" {
+    assert.notThat(mascota2.esBuena())
+  }
+  
+  test "una huerta con capacidad de produccion 80 es buena" {
+    assert.that(huerta1.esBuena())
+  }
+  
+  test "una huerta con capacidad de produccion 60 no es buena" {
+    assert.notThat(huerta2.esBuena())
+  }
+  
+  test "un barrio con 5 elementos buenos y 2 malos es copado" {
+    barrio.agregarElemento(hogar1)
+    barrio.agregarElemento(hogar1)
+    barrio.agregarElemento(mascota1)
+    barrio.agregarElemento(mascota1)
+    barrio.agregarElemento(mascota1)
+    barrio.agregarElemento(huerta2)
+    barrio.agregarElemento(huerta2)
+    assert.that(barrio.esCopado())
+  }
+  
+  test "un barrio con 2 elementos buenos y 3 malos no es copado" {
+    barrio.agregarElemento(hogar1)
+    barrio.agregarElemento(hogar2)
+    barrio.agregarElemento(mascota1)
+    barrio.agregarElemento(mascota2)
+    barrio.agregarElemento(huerta2)
+    assert.notThat(barrio.esCopado())
+  }
+}
+
+describe "Test de plagas" {
+  const plagaCucarachas = new PlagaCucarachas(poblacion = 30, pesoPromedio = 12)
+  const plagaCucarachas2 = new PlagaCucarachas(poblacion = 20, pesoPromedio = 8)
+  const plagaPulgas = new PlagaPulgas(poblacion = 15)
+  const plagaPulgas2 = new PlagaPulgas(poblacion = 5)
+  const plagaGarrapatas = new PlagaGarrapatas(poblacion = 20)
+  const plagaGarrapatas2 = new PlagaGarrapatas(poblacion = 5)
+  const plagaMosquitos = new PlagaMosquitos(poblacion = 12)
+  const plagaMosquitos2 = new PlagaMosquitos(poblacion = 10)
+  
+  test "una plaga de cucarachas con poblacion 30 y peso promedio 12 tiene nivel de daño 15 y ademas transmite enfermedad" {
+    assert.equals(15, plagaCucarachas.nivelDeDanio())
+    assert.that(plagaCucarachas.transmitenEnfermedad())
+  }
+  
+  test "una plaga de cucarachas con poblacion 20 y peso promedio 8 tiene nivel de daño 10 y no transmite enfermedad" {
+    assert.equals(10, plagaCucarachas2.nivelDeDanio())
+    assert.notThat(plagaCucarachas2.transmitenEnfermedad())
+  }
+  
+  test "una plaga de pulgas con poblacion 15 tiene nivel de daño 30 y ademas transmite enfermedad" {
+    assert.equals(30, plagaPulgas.nivelDeDanio())
+    assert.that(plagaPulgas.transmitenEnfermedad())
+  }
+  
+  test "una plaga de pulgas con poblacion 5 tiene nivel de daño 10 y no transmite enfermedad" {
+    assert.equals(10, plagaPulgas2.nivelDeDanio())
+    assert.notThat(plagaPulgas2.transmitenEnfermedad())
+  }
+  
+  test "una plaga de garrapatas con poblacion 20 tiene nivel de daño 40 y ademas transmite enfermedad" {
+    assert.equals(40, plagaGarrapatas.nivelDeDanio())
+    assert.that(plagaGarrapatas.transmitenEnfermedad())
+  }
+  
+  test "una plaga de garrapatas con poblacion 5 tiene nivel de daño 10 y no transmite enfermedad" {
+    assert.equals(10, plagaGarrapatas2.nivelDeDanio())
+    assert.notThat(plagaGarrapatas2.transmitenEnfermedad())
+  }
+  
+  test "una plaga de mosquitos con poblacion 12 tiene nivel de daño 12 y ademas transmite enfermedad" {
+    assert.equals(12, plagaMosquitos.nivelDeDanio())
+    assert.that(plagaMosquitos.transmitenEnfermedad())
+  }
+  
+  test "una plaga de mosquitos con poblacion 10 tiene nivel de daño 10 y no transmite enfermedad" {
+    assert.equals(10, plagaMosquitos2.nivelDeDanio())
+    assert.notThat(plagaMosquitos2.transmitenEnfermedad())
+  }
+}
+
+describe "Test de ataque de plagas sobre elementos" {
+  const plagaCucarachas = new PlagaCucarachas(poblacion = 30, pesoPromedio = 12)
+  const plagaPulgas = new PlagaPulgas(poblacion = 40)
+  const plagaPulgas2 = new PlagaPulgas(poblacion = 5)
+  const plagaGarrapatas = new PlagaGarrapatas(poblacion = 20)
+  const plagaMosquitos = new PlagaMosquitos(poblacion = 80)
+  const hogar1 = new Hogar(nivelMugre = 100, confort = 200)
+  const mascota1 = new Mascota(nivelDeSalud = 300)
+  const huerta1 = new Huerta(capacidadDeProduccion = 80)
+  
+  test "Un hogar con nivel de mugre 100 termina con un nivel de mugre de 115 luego de un ataque de una plaga de 30 cucarachas" {
+    hogar1.recibirAtaqueDe(plagaCucarachas)
+    assert.equals(115, hogar1.nivelMugre())
+  }
+  
+  test "Una huerta con capacidad de produccion de 80 termina con una capacidad de producción de 72 luego de un ataque de una plaga de mosquitos con una poblacion de 80" {
+    huerta1.recibirAtaqueDe(plagaMosquitos)
+    assert.equals(72, huerta1.capacidadDeProduccion())
+  }
+  
+  test "Una huerta con capacidad de produccion de 80 termina con una capacidad de producción de  62 luego de un ataque de una plaga de pulgas con una poblacion de 40" {
+    huerta1.recibirAtaqueDe(plagaPulgas)
+    assert.equals(62, huerta1.capacidadDeProduccion())
+  }
+  
+  test "Una mascota con nivel de salud 300 termina con un nivel de salud de 260 luego de un ataque de una plaga de garrapatas con una poblacion de 20" {
+    mascota1.recibirAtaqueDe(plagaGarrapatas)
+    assert.equals(260, mascota1.nivelDeSalud())
+  }
+  
+  test "Una mascota con nivel de salud 300 recibe un ataque de una plaga de pulgas con una poblacion de 5 y no sufre daños" {
+    mascota1.recibirAtaqueDe(plagaPulgas2)
+    assert.equals(300, mascota1.nivelDeSalud())
+  }
+}
+
+describe "Test de efecto de ataque sobre las plagas" {
+  const plagaCucarachas = new PlagaCucarachas(poblacion = 30, pesoPromedio = 12)
+  const plagaPulgas = new PlagaPulgas(poblacion = 40)
+  const plagaGarrapatas = new PlagaGarrapatas(poblacion = 20)
+  const plagaMosquitos = new PlagaMosquitos(poblacion = 80)
+  const hogar1 = new Hogar(nivelMugre = 100, confort = 200)
+
+  test "Una plaga de cucarachas con poblacion 30 y peso promedio 12 tiene una poblacion 33  y un peso promedio de 14 luego de un ataque" {
+    plagaCucarachas.atacarA(hogar1)
+    assert.equals(33, plagaCucarachas.poblacion())
+    assert.equals(14, plagaCucarachas.pesoPromedio())
+  }
+
+  test "Una plaga de pulgas con poblacion 40 tiene una poblacion 44 luego de un ataque" {
+    plagaPulgas.atacarA(hogar1)
+    assert.equals(44, plagaPulgas.poblacion())
+  }
+
+  test "Una plaga de garrapatas con poblacion 20 tiene una poblacion 24 luego de un ataque" {
+    plagaGarrapatas.atacarA(hogar1)
+    assert.equals(24, plagaGarrapatas.poblacion())
+  }
+
+  test "Una plaga de mosquitos con poblacion 80 tiene una poblacion 88 luego de un ataque" {
+    plagaMosquitos.atacarA(hogar1)
+    assert.equals(88, plagaMosquitos.poblacion())
+  }
+
+}
